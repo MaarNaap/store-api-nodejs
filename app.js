@@ -2,6 +2,7 @@ const express = require('express');
 const products = require('./routes/products');
 const dbConnect = require('./db/dbConnect');
 const notFound = require('./middleware/notFound');
+require('dotenv').config();
 
 const app = express();
 
