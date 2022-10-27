@@ -1,7 +1,12 @@
 const Product = require('../models/product');
 const tryOrCatch = require('../middleware/tryCatch');
 
+// const getAllProducts = tryOrCatch(async (req, res, next) => {
+//         const products = await Product.find({}).select('id title price').sort({ price: -1 });
+//         res.send({ status: 'Success', length: products.length, data: products });
+// });
 const getAllProducts = tryOrCatch(async (req, res, next) => {
+        console.log(req.query);
         const products = await Product.find({}).select('id title price').sort({ price: -1 });
         res.send({ status: 'Success', length: products.length, data: products });
 });
