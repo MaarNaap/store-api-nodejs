@@ -9,7 +9,7 @@ const tryOrCatch = require('../middleware/tryCatch');
 // using query parameters
 const getAllProducts = tryOrCatch(async (req, res, next) => {
         // console.log(req.query);
-        const { title, brand, inStock, search, sort, select} = req.query;
+        const { title, brand, inStock, search, sort, select, filters} = req.query;
 
         // filtering
         const queryParams = {};
@@ -47,6 +47,32 @@ const getAllProducts = tryOrCatch(async (req, res, next) => {
         const page = req.query.page || 1;
         const limit = req.query.limit || 10;
         const skip = (page - 1) * limit;
+
+
+        // numeric filters
+        if (filters) {
+                // console.log(filters); // price>10 => price: {$gt:10}
+                let filter = filters.split(',');
+                const mapping = {
+                        '>': '$gt',
+                        '>=': '$gte',
+                        '=': '$eq',
+                        '<': '$lt',
+                        '<=': '$lte'
+                };
+                const regex = /\b(>|>=|=|<|<=)\b/;
+                filter.forEach((value) => {
+                        const match = regex.exec(value);
+                        if (!match) return;
+                        value = value.replace(regex, `_${mapping[match[0]]}_`);
+                        value = value.split('_');
+                        const allowedNumericFilterFields = ['stock', 'price', 'rating'];
+                        if (allowedNumericFilterFields.includes(value[0])) {
+                                queryParams[value[0]] = {};
+                                queryParams[value[0]][value[1]] = Number(value[2]);
+                        }
+                });
+        };
 
         const products = await Product.find(queryParams).sort(sortList).select(selectList).limit(limit).skip(skip);
         res.send({ status: 'Success', length: products.length, data: products });
