@@ -66,7 +66,7 @@ const getAllProducts = tryOrCatch(async (req, res, next) => {
                         if (!match) return;
                         value = value.replace(regex, `_${mapping[match[0]]}_`);
                         value = value.split('_');
-                        const allowedNumericFilterFields = ['stock', 'price', 'rating'];
+                        const allowedNumericFilterFields = ['stock', 'price', 'rating', 'discountPercentage'];
                         if (allowedNumericFilterFields.includes(value[0])) {
                                 queryParams[value[0]] = {};
                                 queryParams[value[0]][value[1]] = Number(value[2]);
