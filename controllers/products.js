@@ -47,7 +47,7 @@ const getAllProducts = tryOrCatch(async (req, res, next) => {
         const page = req.query.page || 1;
         const limit = req.query.limit || 10;
         const skip = (page - 1) * limit;
-
+        
         const products = await Product.find(queryParams).sort(sortList).select(selectList).limit(limit).skip(skip);
         res.send({ status: 'Success', length: products.length, data: products });
 });
