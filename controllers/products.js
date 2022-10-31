@@ -9,7 +9,7 @@ const getQueryParams = require('../middleware/queryParams');
 
 // using query parameters
 const getAllProducts = tryOrCatch(async (req, res, next) => {
-        const { queryParams, sortList, selectList, limit, skip } = getQueryParams(req.body);
+        const { queryParams, sortList, selectList, limit, skip } = getQueryParams(req.query);
         const products = await Product.find(queryParams).sort(sortList).select(selectList).limit(limit).skip(skip);
         res.send({ status: 'Success', length: products.length, data: products });
 });

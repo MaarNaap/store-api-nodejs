@@ -1,5 +1,6 @@
-function getQueryParams(requestBody) {
-    const { title, brand, inStock, search, sort, select, filters } = requestBody;
+function getQueryParams(requestQuery) {
+    const { title, brand, inStock, search, sort, select, filters } = requestQuery;
+    // console.log('requestQuery : ', requestQuery);
 
     // filtering
     const queryParams = {};
@@ -34,8 +35,8 @@ function getQueryParams(requestBody) {
 
 
     // pagination
-    const page = requestBody.page || 1;
-    const limit = requestBody.limit || 10;
+    const page = requestQuery.page || 1;
+    const limit = requestQuery.limit || 10;
     const skip = (page - 1) * limit;
 
 
