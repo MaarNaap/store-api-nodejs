@@ -8,19 +8,16 @@ const jwt = require('jsonwebtoken');
 //         res.send({ status: 'Success', length: products.length, data: products });
 // });
 
-let myToken; // store the token here for simplicity. it should be sent to the front end.
 
 const loginUser = tryOrCatch(async (req, res, next) => {
         // validation goes here
-
         const token = jwt.sign({ username: 'Omar-Belal', id: 1 }, 'SecretKeyHere', { expiresIn: '30d' });
-        myToken = token;
         res.send(token);
 });
 
 // using query parameters
 const getAllProducts = tryOrCatch(async (req, res, next) => {
-        if (!req.user) return res.status(401).send('Not athorized');
+        if (!req.user) return res.status(401).send('Not athorized'); // from auth module
         const { queryParams, sortList, selectList, limit, skip } = getQueryParams(req.query);
         const products = await Product.find(queryParams).sort(sortList).select(selectList).limit(limit).skip(skip);
         res.send({ status: 'Success', length: products.length, data: products });
