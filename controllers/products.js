@@ -1,14 +1,26 @@
 const Product = require('../models/product');
 const tryOrCatch = require('../middleware/tryCatch');
 const getQueryParams = require('../middleware/queryParams');
+const jwt = require('jsonwebtoken');
 
 // const getAllProducts = tryOrCatch(async (req, res, next) => {
 //         const products = await Product.find({}).select('id title price').sort({ price: -1 });
 //         res.send({ status: 'Success', length: products.length, data: products });
 // });
 
+let myToken; // store the token here for simplicity. it should be sent to the front end.
+
+const loginUser = tryOrCatch(async (req, res, next) => {
+        // validation goes here
+
+        const token = jwt.sign({ username: 'Omar-Belal', id: 1 }, 'SecretKeyHere', { expiresIn: '30d' });
+        myToken = token;
+        res.send(token);
+});
+
 // using query parameters
 const getAllProducts = tryOrCatch(async (req, res, next) => {
+        if (!req.user) return res.status(401).send('Not athorized');
         const { queryParams, sortList, selectList, limit, skip } = getQueryParams(req.query);
         const products = await Product.find(queryParams).sort(sortList).select(selectList).limit(limit).skip(skip);
         res.send({ status: 'Success', length: products.length, data: products });
@@ -39,5 +51,5 @@ const updateProduct = tryOrCatch(async (req, res, next) => {
 });
 
 module.exports = {
-    getAllProducts, getOneProduct, deleteProduct, updateProduct, createProduct
+        getAllProducts, getOneProduct, deleteProduct, updateProduct, createProduct, loginUser
 };
