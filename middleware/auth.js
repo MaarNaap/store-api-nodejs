@@ -7,14 +7,14 @@ function authorizeUser(req, res, next) {
     if (!authHeader || !authHeader.startsWith('Bearer ')) throw new BadRequest('Bad Request. Send authorization headers.');
     const token = authHeader.split(' ')[1];
     try {
-        const decodedToken = jwt.verify(token, 'SecretKeyHere');
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
         const { username, id } = decodedToken;
         req.user = { username, id };
         next();
     } catch (error) {
         // res.status(401).send('Can\'t authorize. ' + error);
         throw new Unauthorized('Can\'t authorize you:: ' + error);
-    }
+    };
 };
 
 module.exports = authorizeUser;

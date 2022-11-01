@@ -14,7 +14,7 @@ const loginUser = tryOrCatch(async (req, res, next) => {
         // validation goes here...
         const { name, id } = req.body;
         if (!name || !id) throw new BadRequest('Provide your name and id');
-        const token = jwt.sign({name, id}, 'SecretKeyHere', { expiresIn: '30d' });
+        const token = jwt.sign({name, id}, process.env.JWT_SECRET_KEY, { expiresIn: '30d' });
         res.send(token);
 });
 
