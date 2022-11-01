@@ -1,16 +1,19 @@
 const jwt = require('jsonwebtoken');
+const BadRequest = require('../errors/BadRequest');
+const Unauthorized = require('../errors/Unauthorized');
 
 function authorizeUser(req, res, next) {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) return res.status(401).send('Forbidden: Unauthorized. Send authorization headers in your request. Use POSTMAN.');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) throw new BadRequest('Bad Request. Send authorization headers.');
     const token = authHeader.split(' ')[1];
     try {
-        const decodedToken = jwt.verify(token, 'SecretKeyHere'); // use try catch here
+        const decodedToken = jwt.verify(token, 'SecretKeyHere');
         const { username, id } = decodedToken;
         req.user = { username, id };
         next();
     } catch (error) {
-        res.status(401).send('Can\'t authorize. ' + error);
+        // res.status(401).send('Can\'t authorize. ' + error);
+        throw new Unauthorized('Can\'t authorize you:: ' + error);
     }
 };
 

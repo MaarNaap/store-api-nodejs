@@ -4,10 +4,10 @@ function tryCatch(fn) {
             await fn(req, res, next);
         } catch (error) {
             console.log(error);
-            // next(error);
-            res.status(500).send('Error in tryCatch::' + error.message);
-        }
-    }
+            next(error);
+            // res.status(500).send('Error in tryCatch::' + error.message); // temprary
+        };
+    };
 };
 
 module.exports = tryCatch;
